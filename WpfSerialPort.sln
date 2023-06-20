@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfSerialPort", "WpfSerialPort\WpfSerialPort.csproj", "{6495E46E-5108-41A9-81C5-39ECB91D6F46}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6495E46E-5108-41A9-81C5-39ECB91D6F46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6495E46E-5108-41A9-81C5-39ECB91D6F46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6495E46E-5108-41A9-81C5-39ECB91D6F46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6495E46E-5108-41A9-81C5-39ECB91D6F46}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {60437EE7-E408-4F55-9458-7CFA3843B298}
+	EndGlobalSection
+EndGlobal

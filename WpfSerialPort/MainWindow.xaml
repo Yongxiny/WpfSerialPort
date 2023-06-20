@@ -1,0 +1,182 @@
+﻿<Window x:Class="WpfSerialPort.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:local="clr-namespace:WpfSerialPort"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="500" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition  Width="auto"/>
+            <ColumnDefinition />
+            
+        </Grid.ColumnDefinitions>
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+               
+            </Grid.RowDefinitions>
+            <StackPanel Height="300" >
+            <StackPanel Orientation="Horizontal" Margin="5" >
+                <TextBlock Text="串口号" Margin="5"/>
+                    <ComboBox Width="75"
+                              ItemsSource="{Binding ComNames}"
+                              SelectedValuePath="Id"
+                              DisplayMemberPath="Name"
+                              SelectedItem="{Binding CmbCom,Mode=TwoWay}"
+                              IsEnabled="{Binding IsReadOnly, Mode=TwoWay}"
+                             >
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="5">
+                    <TextBlock Text="波特率"
+                               Margin="5"
+                                />
+                    <ComboBox Width="75"
+                              SelectedItem="{Binding CmbBaudRate ,Mode=TwoWay}"
+                              IsEnabled="{Binding IsReadOnly, Mode=TwoWay}">
+                        <ComboBoxItem Content="1200" />
+                        <ComboBoxItem Content="2400" />
+                        <ComboBoxItem Content="4800" />
+                        <ComboBoxItem Content="9600" />
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="5">
+                    <TextBlock Text="校验位"
+                               Margin="5"
+                                />
+                    <ComboBox Width="75"
+                              SelectedItem="{Binding CmbParity,Mode=TwoWay}"
+                              IsEnabled="{Binding IsReadOnly, Mode=TwoWay}">
+                        <ComboBoxItem Content="None" />
+                        <ComboBoxItem Content="Odd" />
+                        <ComboBoxItem Content="Even" />
+                        <ComboBoxItem Content="Mark" />
+                        <ComboBoxItem Content="Space" />
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="5">
+                    <TextBlock Text="数据位"
+                               Margin="5"
+                               />
+                    <ComboBox  Width="75"
+                               SelectedItem="{Binding CmbDataBits,Mode=TwoWay}"
+                               IsEnabled="{Binding IsReadOnly, Mode=TwoWay}">
+                        <ComboBoxItem Content="5" />
+                        <ComboBoxItem Content="6" />
+                        <ComboBoxItem Content="7" />
+                        <ComboBoxItem Content="8" />
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="5">
+                    <TextBlock Text="停止位"
+                               Margin="5" />
+                    <ComboBox Width="75"
+                              SelectedItem="{Binding CmbStopBits,Mode=TwoWay}"
+                              IsEnabled="{Binding IsReadOnly, Mode=TwoWay}">
+                        <ComboBoxItem Content="1" /> 
+                        <ComboBoxItem Content="2" />
+                        <ComboBoxItem Content="3" />
+
+                    </ComboBox>
+                </StackPanel>
+
+                <Button Height="30"
+                        
+                        Content="{Binding OpenOrClose}"
+                        Command="{Binding OperateCommand}"
+                        CommandParameter="{Binding OpenOrClose}">
+                    </Button>
+                
+            </StackPanel>
+            <StackPanel Grid.Row="1">
+                <CheckBox Content="显示接收时间"  
+                          Margin="5"/>
+                <CheckBox Content="暂停接收显示"
+                          Margin="5" />
+                <ListBox ScrollViewer.VerticalScrollBarVisibility="Auto" Height="180"/>
+            </StackPanel>
+           
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <TextBlock Text="数据接收区" Margin="5"/>
+                <TextBox TextWrapping="Wrap"
+                         Height="140"
+                         Text="{Binding ReceivedData}" Margin="5"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         AcceptsReturn="True" />
+                <DockPanel>
+                    <CheckBox Margin="5"
+                              Content="HEX接收"
+                              IsChecked="{Binding ReceiveChecked}"
+                              Command="{Binding ConvertCommand}"
+                              CommandParameter="{Binding SendChecked}" 
+                             />
+                    <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    
+                    <Button Content="清空接收数据"
+                            Margin="5"
+                            Width="80"
+                            Command="{Binding OperateContentCommand }"
+                            CommandParameter="ClearReceived" />
+                    <Button Content="发送"
+                            Margin="5"
+                            Width="80"
+                            Command="{Binding OperateContentCommand }"
+                            CommandParameter="Send" />
+                </StackPanel>
+                </DockPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="1">
+                <TextBlock Text="数据发送区"
+                           Margin="5" />
+                <TextBox TextWrapping="Wrap"
+                         Height="140"
+                         Text="{Binding SendData}"
+                         Margin="5" />
+                <DockPanel Margin="5,0" >
+                    <CheckBox Content="HEX发送"
+                              Margin="5"
+                              DockPanel.Dock="Left"
+                              IsChecked="{Binding SendChecked}"
+                              Command="{Binding ConvertCommand}"
+                              CommandParameter="{Binding SendChecked}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="清空发送数据"
+                            Margin="5"
+                            Width="80"
+                            Command="{Binding OperateContentCommand }"
+                            CommandParameter="ClearSend"
+                            />
+                    <Button Content="发送"
+                            Margin="5"
+                            Width="80"
+                            Command="{Binding OperateContentCommand }"
+                            CommandParameter="Send"
+                           />
+                    </StackPanel>
+                </DockPanel>
+            </StackPanel>
+            <Border Grid.Row="2"
+                    Background="AliceBlue">
+                <StackPanel>
+                    <TextBlock Text="{Binding TextMessage}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
