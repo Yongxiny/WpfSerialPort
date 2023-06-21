@@ -31,10 +31,6 @@ namespace WpfSerialPort
         }
 
 
-
-
-
-
         #region 属性
 
         private readonly MySerialPort mySerialPort;
@@ -194,14 +190,24 @@ namespace WpfSerialPort
             var strCompare = strIn.Split('-');
             if (strCompare.Count() > 1)
             {
-                if (strCompare[0] == "#Sp000")
+                if (strCompare[0] == "#Info000")
                 {
                     TextMessage = SerialPortInfo.PortName + "已连接";
                     return false;
                 }
-                if (strCompare[0] == "#Sp001")
+                if (strCompare[0] == "#Info001")
                 {
                     TextMessage = SerialPortInfo.PortName + "已断开";
+                    return false;
+                }
+                if (strCompare[0] == "#Error000")
+                {
+                    TextMessage = strIn;
+                    return false;
+                }
+                if (strCompare[0] == "#Error001")
+                {
+                    TextMessage = strIn;
                     return false;
                 }
             }
@@ -256,7 +262,7 @@ namespace WpfSerialPort
             }
             catch (Exception ex)
             {
-
+                TextMessage = string.Format("#Error002-{0}", ex.Message);
             }
         }
 

@@ -44,7 +44,7 @@ namespace WpfSerialPort
             serialPort.DataReceived += new SerialDataReceivedEventHandler(SerialDataReceived);
             if (!serialPort.IsOpen)
                 serialPort.Open();
-            ReceiveClientDataEvent(string.Format("#Sp000-{0}", serialPortConfiguration.PortName));
+            ReceiveClientDataEvent(string.Format("#Info000-{0}", serialPortConfiguration.PortName));
             return true;
         }
 
@@ -53,9 +53,13 @@ namespace WpfSerialPort
             if (serialPort != null && serialPort.IsOpen)
             {
                 serialPort.Close();
-                ReceiveClientDataEvent(string.Format("#Sp001-{0}", serialPort.PortName));
+                ReceiveClientDataEvent(string.Format("#Info001-{0}", serialPort.PortName));
                 serialPort = new SerialPort();
                 return true;
+            }
+            else
+            {
+                ReceiveClientDataEvent(string.Format("#Error001-{0}", "未进行连接"));
             }
             return false;
         }
@@ -100,7 +104,7 @@ namespace WpfSerialPort
             }
             catch (Exception ex)
             {
-
+                ReceiveClientDataEvent(string.Format("#Error000-{0}", ex.Message));
             }
             return false;
         }
