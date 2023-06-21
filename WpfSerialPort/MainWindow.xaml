@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:WpfSerialPort"
+        ResizeMode="NoResize"
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="800">
     <Grid>
@@ -19,7 +20,7 @@
                 <RowDefinition />
                
             </Grid.RowDefinitions>
-            <StackPanel Height="300" >
+            <StackPanel Height="300" Margin="10" >
             <StackPanel Orientation="Horizontal" Margin="5" >
                 <TextBlock Text="串口号" Margin="5"/>
                     <ComboBox Width="75"
@@ -92,16 +93,22 @@
                         
                         Content="{Binding OpenOrClose}"
                         Command="{Binding OperateCommand}"
-                        CommandParameter="{Binding OpenOrClose}">
+                        CommandParameter="{Binding OpenOrClose}" Margin="5,5">
                     </Button>
                 
             </StackPanel>
             <StackPanel Grid.Row="1">
-                <CheckBox Content="显示接收时间"  
-                          Margin="5"/>
+                <CheckBox Content="显示接收时间"
+                          Margin="5"
+                          IsChecked="{Binding DisplayChecked}"
+                          CommandParameter="显示接收时间"/>
                 <CheckBox Content="暂停接收显示"
-                          Margin="5" />
-                <ListBox ScrollViewer.VerticalScrollBarVisibility="Auto" Height="180"/>
+                          Margin="5"
+                          Command="{Binding StopDisplayCheckedCommand}"
+                          CommandParameter="暂停接收显示">
+                    
+                </CheckBox>
+                <ListBox Width="160" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding MessageList}" Height="180"/>
             </StackPanel>
            
         </Grid>
@@ -117,6 +124,7 @@
                          Height="140"
                          Text="{Binding ReceivedData}" Margin="5"
                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         IsEnabled="{Binding ReceiveIsEnable}"
                          AcceptsReturn="True" />
                 <DockPanel>
                     <CheckBox Margin="5"

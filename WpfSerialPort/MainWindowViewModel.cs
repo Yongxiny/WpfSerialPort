@@ -19,8 +19,10 @@ namespace WpfSerialPort
             OperateCommand = new DelegateCommand<string>(Operate);
             OperateContentCommand = new DelegateCommand<string>(OperateContent);
             ConvertCommand = new DelegateCommand<object>(ConvertData);
+            StopDisplayCheckedCommand = new DelegateCommand(StopDisplayChecked);
 
             ComNames = new ObservableCollection<ComboxInfo>();
+            MessageList = new ObservableCollection<string>();
             foreach (var item in mySerialPort.GetALLCOM())
             {
                 ComNames.Add(item);
@@ -29,6 +31,7 @@ namespace WpfSerialPort
             mySerialPort.SendClientDataEvent += MySerialPort_SendClientDataEvent;
 
         }
+
 
 
         #region 属性
@@ -47,12 +50,21 @@ namespace WpfSerialPort
 
         public DelegateCommand<object> ConvertCommand { get; private set; }
 
+        public DelegateCommand StopDisplayCheckedCommand { get; private set; }
+
         private ObservableCollection<ComboxInfo> comNames;
 
         public ObservableCollection<ComboxInfo> ComNames
         {
             get { return comNames; }
             set { comNames = value; RaisePropertyChanged(); }
+        }
+
+        private ObservableCollection<string> messageList;
+        public ObservableCollection<string> MessageList
+        {
+            get { return messageList; }
+            set { messageList = value; RaisePropertyChanged(); }
         }
 
         private string openOrClose;
@@ -152,6 +164,22 @@ namespace WpfSerialPort
             set { receiveChecked = value; RaisePropertyChanged(); }
         }
 
+        private bool displayChecked;
+
+        public bool DisplayChecked
+        {
+            get { return displayChecked; }
+            set { displayChecked = value; RaisePropertyChanged(); }
+        }
+        private bool receiveIsEnable;
+
+        public bool ReceiveIsEnable
+        {
+            get { return receiveIsEnable; }
+            set { receiveIsEnable = value; RaisePropertyChanged(); }
+        }
+
+
         #endregion
         /// <summary>
         /// 发送数据
@@ -180,7 +208,10 @@ namespace WpfSerialPort
             {
                 if (!ReceSerialPort(data))
                     return;
-                ReceivedData += data;
+                if (DisplayChecked)
+                    ReceivedData += DateTime.Now + ":" + data + "\r\n";
+                else
+                    ReceivedData += data;
             }));
             return true;
         }
@@ -193,21 +224,25 @@ namespace WpfSerialPort
                 if (strCompare[0] == "#Info000")
                 {
                     TextMessage = SerialPortInfo.PortName + "已连接";
+                    MessageList.Add(string.Format("{0}:{1}", DateTime.Now.ToString("T"), TextMessage));
                     return false;
                 }
                 if (strCompare[0] == "#Info001")
                 {
                     TextMessage = SerialPortInfo.PortName + "已断开";
+                    MessageList.Add(string.Format("{0}:{1}", DateTime.Now.ToString("T"), TextMessage));
                     return false;
                 }
                 if (strCompare[0] == "#Error000")
                 {
                     TextMessage = strIn;
+                    MessageList.Add(string.Format("{0}:{1}", DateTime.Now.ToString("T"), TextMessage));
                     return false;
                 }
                 if (strCompare[0] == "#Error001")
                 {
                     TextMessage = strIn;
+                    MessageList.Add(string.Format("{0}:{1}", DateTime.Now.ToString("T"), TextMessage));
                     return false;
                 }
             }
@@ -221,7 +256,10 @@ namespace WpfSerialPort
                 switch (obj)
                 {
                     case "Send":
-                        mySerialPort.SendSerialData(SendData);
+                        if (mySerialPort.SendSerialData(SendData))
+                            ReceiveIsEnable = true;
+                        else
+                            ReceiveIsEnable = false;
                         break;
                     case "ClearSend":
                         SendData = string.Empty;
@@ -231,7 +269,19 @@ namespace WpfSerialPort
                         break;
                 }
             }
-            catch (Exception e) { }
+            catch (Exception ex)
+            {
+                TextMessage = string.Format("#Error002-{0}", ex.Message);
+                MessageList.Add(string.Format("{0}:{1}", DateTime.Now.ToString("T"), TextMessage));
+            }
+        }
+
+        private void StopDisplayChecked()
+        {
+            if (ReceiveIsEnable)
+                ReceiveIsEnable = false;
+            else
+                ReceiveIsEnable = true;
         }
 
         private void Operate(string obj)
@@ -263,6 +313,7 @@ namespace WpfSerialPort
             catch (Exception ex)
             {
                 TextMessage = string.Format("#Error002-{0}", ex.Message);
+                MessageList.Add(string.Format("{0}:{1}", DateTime.Now.ToString("T"), TextMessage));
             }
         }
 
